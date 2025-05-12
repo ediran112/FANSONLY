@@ -1,65 +1,113 @@
 
-import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { logout, getUser } from '../../lib/auth';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { LogOut, Search } from 'lucide-react';
+import { logout, getUser } from '@/lib/auth';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Bell, LogOut, User } from 'lucide-react';
 
 const Header = () => {
-  const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
   const user = getUser();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const isScrolled = window.scrollY > 10;
-      if (isScrolled !== scrolled) {
-        setScrolled(isScrolled);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [scrolled]);
-
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
-
   return (
-    <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-netflix-black shadow-lg' : 'bg-gradient-to-b from-netflix-black/80 to-transparent'}`}>
-      <div className="container mx-auto flex items-center justify-between h-16 px-4 md:px-6">
-        <div className="flex items-center">
-          <Link to="/dashboard" className="text-netflix-red font-bold text-2xl md:text-3xl mr-8">
-            NETFLIX
-          </Link>
-          <nav className="hidden md:flex space-x-6">
-            <Link to="/dashboard" className="text-white hover:text-gray-300">Início</Link>
-            <Link to="/dashboard" className="text-white hover:text-gray-300">Séries</Link>
-            <Link to="/dashboard" className="text-white hover:text-gray-300">Filmes</Link>
-            <Link to="/dashboard" className="text-white hover:text-gray-300">Minha Lista</Link>
-          </nav>
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
+      <div className="container mx-auto flex items-center justify-between py-3 px-4">
+        {/* Logo */}
+        <div onClick={() => navigate('/dashboard')} className="cursor-pointer">
+          <h1 className="text-primary font-bold text-2xl">FANSONLY</h1>
         </div>
 
-        <div className="flex items-center space-x-4">
-          <Button variant="ghost" className="text-white p-0">
-            <Search className="h-5 w-5" />
+        {/* Navigation Links */}
+        <nav className="hidden md:flex items-center space-x-6">
+          <Button
+            variant="link"
+            className="text-white hover:text-primary"
+            onClick={() => navigate('/dashboard')}
+          >
+            Início
           </Button>
-          
-          <div className="flex items-center">
-            <span className="hidden md:block text-white mr-2">
-              {user?.displayName}
-            </span>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="text-white hover:text-netflix-red"
-              onClick={handleLogout}
-            >
-              <LogOut className="h-5 w-5" />
-            </Button>
-          </div>
+          <Button
+            variant="link"
+            className="text-white hover:text-primary"
+            onClick={() => {}}
+          >
+            Criadores
+          </Button>
+          <Button
+            variant="link"
+            className="text-white hover:text-primary"
+            onClick={() => {}}
+          >
+            Categorias
+          </Button>
+          <Button
+            variant="link"
+            className="text-white hover:text-primary"
+            onClick={() => {}}
+          >
+            Favoritos
+          </Button>
+        </nav>
+
+        {/* User Menu */}
+        <div className="flex items-center space-x-3">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-white hover:bg-white/10 rounded-full relative"
+          >
+            <Bell className="h-5 w-5" />
+            <span className="absolute top-0 right-0 w-2 h-2 rounded-full bg-primary" />
+          </Button>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="rounded-full h-8 w-8 p-0"
+              >
+                <Avatar>
+                  <AvatarImage src={user?.avatarUrl} alt={user?.displayName} />
+                  <AvatarFallback>{user?.displayName.substring(0, 2)}</AvatarFallback>
+                </Avatar>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56 bg-secondary border-border">
+              <div className="flex items-center justify-start space-x-2 p-2">
+                <Avatar>
+                  <AvatarImage src={user?.avatarUrl} alt={user?.displayName} />
+                  <AvatarFallback>{user?.displayName.substring(0, 2)}</AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col space-y-1">
+                  <p className="text-sm font-medium leading-none">{user?.displayName}</p>
+                  <p className="text-xs leading-none text-muted-foreground">
+                    @{user?.username}
+                  </p>
+                </div>
+              </div>
+              
+              <DropdownMenuSeparator />
+              
+              <DropdownMenuItem className="cursor-pointer" onClick={() => {}}>
+                <User className="mr-2 h-4 w-4" /> 
+                Meu Perfil
+              </DropdownMenuItem>
+              
+              <DropdownMenuSeparator />
+              
+              <DropdownMenuItem className="text-red-500 cursor-pointer" onClick={logout}>
+                <LogOut className="mr-2 h-4 w-4" /> 
+                Sair
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </header>

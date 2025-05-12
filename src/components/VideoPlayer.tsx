@@ -1,7 +1,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Play, Pause } from 'lucide-react';
+import { Play, Pause, VolumeX, Volume2, Maximize, Minimize } from 'lucide-react';
 
 interface VideoPlayerProps {
   videoUrl: string;
@@ -11,7 +11,15 @@ interface VideoPlayerProps {
 const VideoPlayer = ({ videoUrl, posterUrl }: VideoPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [volume, setVolume] = useState(0.7);
+  const [isMuted, setIsMuted] = useState(false);
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  const [showControls, setShowControls] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const playerRef = useRef<HTMLDivElement>(null);
+  let controlsTimeout: NodeJS.Timeout;
 
   useEffect(() => {
     const video = videoRef.current;
@@ -21,13 +29,21 @@ const VideoPlayer = ({ videoUrl, posterUrl }: VideoPlayerProps) => {
       if (!video) return;
       const progressValue = (video.currentTime / video.duration) * 100;
       setProgress(progressValue);
+      setCurrentTime(video.currentTime);
+    };
+
+    const setVideoData = () => {
+      if (!video) return;
+      setDuration(video.duration);
     };
 
     video.addEventListener('timeupdate', updateProgress);
+    video.addEventListener('loadedmetadata', setVideoData);
     video.addEventListener('ended', () => setIsPlaying(false));
 
     return () => {
       video.removeEventListener('timeupdate', updateProgress);
+      video.removeEventListener('loadedmetadata', setVideoData);
       video.removeEventListener('ended', () => setIsPlaying(false));
     };
   }, []);
@@ -45,37 +61,187 @@ const VideoPlayer = ({ videoUrl, posterUrl }: VideoPlayerProps) => {
     setIsPlaying(!isPlaying);
   };
 
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseFloat(e.target.value);
+    setVolume(value);
+    if (videoRef.current) {
+      videoRef.current.volume = value;
+      setIsMuted(value === 0);
+    }
+  };
+
+  const toggleMute = () => {
+    if (videoRef.current) {
+      if (isMuted) {
+        videoRef.current.volume = volume || 0.5;
+        setIsMuted(false);
+      } else {
+        videoRef.current.volume = 0;
+        setIsMuted(true);
+      }
+    }
+  };
+
+  const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const value = parseFloat(e.target.value);
+    const newTime = (value / 100) * video.duration;
+    video.currentTime = newTime;
+    setProgress(value);
+  };
+
+  const toggleFullScreen = () => {
+    if (!playerRef.current) return;
+
+    if (!isFullScreen) {
+      if (playerRef.current.requestFullscreen) {
+        playerRef.current.requestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+
+    setIsFullScreen(!isFullScreen);
+  };
+
+  const handleVideoClick = () => {
+    togglePlay();
+    resetControlsTimeout();
+  };
+
+  const resetControlsTimeout = () => {
+    setShowControls(true);
+    clearTimeout(controlsTimeout);
+    controlsTimeout = setTimeout(() => {
+      if (isPlaying) {
+        setShowControls(false);
+      }
+    }, 3000);
+  };
+
+  const handleMouseMove = () => {
+    resetControlsTimeout();
+  };
+
+  const formatTime = (timeInSeconds: number) => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = Math.floor(timeInSeconds % 60);
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  };
+
   return (
-    <div className="relative w-full aspect-video">
+    <div 
+      ref={playerRef} 
+      className="relative w-full aspect-video rounded-md overflow-hidden group"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={() => isPlaying && setShowControls(false)}
+    >
       <video
         ref={videoRef}
         src={videoUrl}
         poster={posterUrl}
-        className="w-full h-full object-cover"
-        onClick={togglePlay}
+        className="w-full h-full object-cover cursor-pointer"
+        onClick={handleVideoClick}
       />
       
-      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 flex flex-col">
+      {/* Play button overlay when paused */}
+      {!isPlaying && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="bg-primary/90 hover:bg-primary text-white rounded-full w-16 h-16"
+            onClick={togglePlay}
+          >
+            <Play className="h-8 w-8" />
+          </Button>
+        </div>
+      )}
+      
+      {/* Video controls */}
+      <div 
+        className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent px-4 py-4 flex flex-col transition-opacity duration-300 ${showControls ? 'opacity-100' : 'opacity-0'}`}
+      >
         {/* Progress bar */}
-        <div className="w-full h-1 bg-gray-700 rounded-full mb-4">
-          <div
-            className="h-full bg-netflix-red rounded-full"
-            style={{ width: `${progress}%` }}
+        <div className="w-full mb-2 flex items-center">
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={progress}
+            onChange={handleProgressChange}
+            className="w-full h-1 rounded-full appearance-none bg-gray-700 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary"
+            style={{
+              background: `linear-gradient(to right, var(--primary) 0%, var(--primary) ${progress}%, rgba(100, 100, 100, 0.5) ${progress}%, rgba(100, 100, 100, 0.5) 100%)`,
+            }}
           />
         </div>
 
         {/* Controls */}
         <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-white hover:bg-white/10 rounded-full"
+              onClick={togglePlay}
+            >
+              {isPlaying ? (
+                <Pause className="h-5 w-5" />
+              ) : (
+                <Play className="h-5 w-5" />
+              )}
+            </Button>
+            
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-white hover:bg-white/10 rounded-full"
+                onClick={toggleMute}
+              >
+                {isMuted ? (
+                  <VolumeX className="h-5 w-5" />
+                ) : (
+                  <Volume2 className="h-5 w-5" />
+                )}
+              </Button>
+              
+              <div className="w-20 hidden md:block">
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  value={isMuted ? 0 : volume}
+                  onChange={handleVolumeChange}
+                  className="w-full h-1 rounded-full appearance-none bg-gray-700 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary"
+                  style={{
+                    background: `linear-gradient(to right, var(--primary) 0%, var(--primary) ${isMuted ? 0 : volume * 100}%, rgba(100, 100, 100, 0.5) ${isMuted ? 0 : volume * 100}%, rgba(100, 100, 100, 0.5) 100%)`,
+                  }}
+                />
+              </div>
+            </div>
+            
+            <span className="text-white text-xs md:text-sm">
+              {formatTime(currentTime)} / {formatTime(duration)}
+            </span>
+          </div>
+          
           <Button
             variant="ghost"
             size="icon"
-            className="bg-white/20 hover:bg-white/30"
-            onClick={togglePlay}
+            className="text-white hover:bg-white/10 rounded-full"
+            onClick={toggleFullScreen}
           >
-            {isPlaying ? (
-              <Pause className="h-5 w-5" />
+            {isFullScreen ? (
+              <Minimize className="h-5 w-5" />
             ) : (
-              <Play className="h-5 w-5" />
+              <Maximize className="h-5 w-5" />
             )}
           </Button>
         </div>

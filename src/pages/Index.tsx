@@ -1,17 +1,26 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { login } from '@/lib/auth';
+import { login, hasConfirmedAdultContent, confirmAdultContent } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { toast } from 'sonner';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 
 const Index = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showAgeDialog, setShowAgeDialog] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Show age confirmation dialog if user hasn't confirmed yet
+    if (!hasConfirmedAdultContent()) {
+      setShowAgeDialog(true);
+    }
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,12 +35,21 @@ const Index = () => {
     }
   };
 
+  const handleConfirmAge = () => {
+    confirmAdultContent();
+    setShowAgeDialog(false);
+  };
+
+  const handleDeclineAge = () => {
+    window.location.href = 'https://www.google.com';
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-black py-12 px-4 sm:px-6 lg:px-8 relative">
       <div
-        className="absolute inset-0 z-0 bg-cover bg-center opacity-50"
+        className="absolute inset-0 z-0 bg-cover bg-center opacity-30"
         style={{
-          backgroundImage: `url('https://assets.nflxext.com/ffe/siteui/vlv3/ab4b0b22-2ddf-4d48-ae88-c201ae0267e2/0efe6360-4f6d-4b10-beb5-71dcbcd9c1db/BR-pt-20231030-popsignuptwoweeks-perspective_alpha_website_medium.jpg')`,
+          backgroundImage: `url('https://images.unsplash.com/photo-1595064085577-7c2cabf8b256?auto=format&fit=crop&q=80&w=1920&h=1080')`,
         }}
       />
       
@@ -39,11 +57,11 @@ const Index = () => {
       
       <div className="w-full max-w-md z-20">
         <div className="text-center mb-8">
-          <h1 className="text-netflix-red font-bold text-5xl mb-2">NETFLIX</h1>
-          <p className="text-white text-xl">Entre para assistir</p>
+          <h1 className="text-primary font-bold text-5xl mb-2">FANSONLY</h1>
+          <p className="text-white text-xl">Conteúdo exclusivo para assinantes</p>
         </div>
         
-        <Card className="bg-black/80 border-gray-800">
+        <Card className="bg-black/80 border-gray-800 glass-card">
           <CardHeader>
             <h2 className="text-xl font-bold text-center text-white">Entrar</h2>
           </CardHeader>
@@ -55,7 +73,7 @@ const Index = () => {
                   placeholder="Usuário"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="bg-gray-700 border-gray-600 text-white"
+                  className="bg-gray-800 border-gray-700 text-white"
                   required
                 />
               </div>
@@ -65,13 +83,13 @@ const Index = () => {
                   placeholder="Senha"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="bg-gray-700 border-gray-600 text-white"
+                  className="bg-gray-800 border-gray-700 text-white"
                   required
                 />
               </div>
               <Button 
                 type="submit" 
-                className="w-full bg-netflix-red hover:bg-red-700 text-white" 
+                className="w-full bg-primary hover:bg-primary/80 text-white" 
                 disabled={isLoading}
               >
                 {isLoading ? 'Entrando...' : 'Entrar'}
@@ -85,11 +103,33 @@ const Index = () => {
           </CardContent>
           <CardFooter className="flex justify-center border-t border-gray-800 pt-4">
             <p className="text-gray-400 text-sm">
-              © 2025 Netflix Clone
+              © 2025 FansOnly
             </p>
           </CardFooter>
         </Card>
       </div>
+
+      {/* Age Verification Dialog */}
+      <Dialog open={showAgeDialog} onOpenChange={setShowAgeDialog}>
+        <DialogContent className="bg-background border-muted">
+          <DialogHeader>
+            <DialogTitle>Verificação de Idade</DialogTitle>
+            <DialogDescription>
+              Este site contém conteúdo adulto destinado apenas para pessoas maiores de 18 anos.
+              Ao continuar, você confirma que tem pelo menos 18 anos de idade e concorda em
+              visualizar conteúdo adulto.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={handleDeclineAge}>
+              Sair
+            </Button>
+            <Button className="bg-primary hover:bg-primary/80" onClick={handleConfirmAge}>
+              Confirmo que tenho 18+ anos
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

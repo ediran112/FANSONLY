@@ -1,137 +1,200 @@
 
-export interface Movie {
+export interface Creator {
+  id: number;
+  name: string;
+  username: string;
+  avatarUrl: string;
+  bio: string;
+  subscriberCount: number;
+  subscriptionPrice: number;
+}
+
+export interface Video {
   id: number;
   title: string;
   description: string;
-  imageUrl: string;
+  thumbnailUrl: string;
   videoUrl: string;
-  year: number;
+  createdAt: string;
   duration: string;
-  genre: string[];
-  rating: number;
+  views: number;
+  creatorId: number;
+  isExclusive: boolean;
 }
 
 export interface Category {
   id: number;
   name: string;
-  movies: Movie[];
+  videos: Video[];
 }
 
-// Sample movies using placeholder URLs for images
-export const movies: Movie[] = [
+// Sample creators
+export const creators: Creator[] = [
   {
     id: 1,
-    title: "Matrix Reloaded",
-    description: "Neo, Trinity e Morpheus continuam a liderar a revolta contra as Máquinas.",
-    imageUrl: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&q=80&w=500&h=750",
-    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-forest-stream-in-the-sunlight-529-large.mp4",
-    year: 2003,
-    duration: "2h 18min",
-    genre: ["Action", "Sci-Fi"],
-    rating: 7.2
+    name: "Sofia Deluxe",
+    username: "sofiadeluxe",
+    avatarUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200&h=200",
+    bio: "Fitness model sharing exclusive workout routines and lifestyle content",
+    subscriberCount: 24500,
+    subscriptionPrice: 12.99
   },
   {
     id: 2,
-    title: "Oceano Azul",
-    description: "Uma jornada fascinante pelas profundezas do oceano.",
-    imageUrl: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&q=80&w=500&h=750",
-    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-beach-with-blue-water-4783-large.mp4",
-    year: 2021,
-    duration: "1h 45min",
-    genre: ["Documentary", "Nature"],
-    rating: 8.5
+    name: "Alex Rivers",
+    username: "alexrivers",
+    avatarUrl: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?auto=format&fit=crop&q=80&w=200&h=200",
+    bio: "Model and photographer sharing artistic photoshoots and behind-the-scenes content",
+    subscriberCount: 18300,
+    subscriptionPrice: 15.99
   },
   {
     id: 3,
-    title: "Noite Estrelada",
-    description: "Uma viagem pela Via Láctea e os mistérios do universo.",
-    imageUrl: "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?auto=format&fit=crop&q=80&w=500&h=750",
-    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-stars-in-space-1610-large.mp4",
-    year: 2020,
-    duration: "2h 05min",
-    genre: ["Documentary", "Science"],
-    rating: 8.1
+    name: "Luna Star",
+    username: "lunastar",
+    avatarUrl: "https://images.unsplash.com/photo-1567532939604-b6b5b398ccff?auto=format&fit=crop&q=80&w=200&h=200",
+    bio: "Dancer and performer sharing dance routines and exclusive performances",
+    subscriberCount: 32100,
+    subscriptionPrice: 19.99
   },
   {
     id: 4,
-    title: "Floresta Encantada",
-    description: "Os segredos e mistérios de uma antiga floresta.",
-    imageUrl: "https://images.unsplash.com/photo-1500673922987-e212871fec22?auto=format&fit=crop&q=80&w=500&h=750",
-    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-raindrops-falling-on-a-leaf-1192-large.mp4",
-    year: 2019,
-    duration: "1h 58min",
-    genre: ["Adventure", "Fantasy"],
-    rating: 7.8
+    name: "James Cole",
+    username: "jamescole",
+    avatarUrl: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=200&h=200",
+    bio: "Fitness coach offering personal training videos and nutrition advice",
+    subscriberCount: 15700,
+    subscriptionPrice: 9.99
+  }
+];
+
+// Sample videos using placeholder URLs for thumbnails
+export const videos: Video[] = [
+  {
+    id: 1,
+    title: "Private Yoga Session",
+    description: "Join me for an exclusive yoga session focusing on flexibility and relaxation techniques.",
+    thumbnailUrl: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=500&h=750",
+    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-woman-doing-yoga-in-a-studio-4820-large.mp4",
+    createdAt: "2025-05-08",
+    duration: "18:45",
+    views: 4320,
+    creatorId: 1,
+    isExclusive: true
+  },
+  {
+    id: 2,
+    title: "Beach Photoshoot BTS",
+    description: "Behind the scenes of my latest beachside photoshoot. See all the angles we didn't publish!",
+    thumbnailUrl: "https://images.unsplash.com/photo-1506901437675-cde80ff9c746?auto=format&fit=crop&q=80&w=500&h=750",
+    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-beach-with-blue-water-4783-large.mp4",
+    createdAt: "2025-05-06",
+    duration: "12:30",
+    views: 2870,
+    creatorId: 3,
+    isExclusive: true
+  },
+  {
+    id: 3,
+    title: "Late Night Chat Session",
+    description: "A candid talk about life, dreams and answering your personal questions.",
+    thumbnailUrl: "https://images.unsplash.com/photo-1610498717975-1867885b32d8?auto=format&fit=crop&q=80&w=500&h=750",
+    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-woman-turning-off-her-alarm-clock-42897-large.mp4",
+    createdAt: "2025-05-05",
+    duration: "35:12",
+    views: 9840,
+    creatorId: 1,
+    isExclusive: false
+  },
+  {
+    id: 4,
+    title: "Workout Session: Core Strength",
+    description: "Intense core workout routine that will help define those abs. Suitable for intermediate level.",
+    thumbnailUrl: "https://images.unsplash.com/photo-1571019613914-85f342c6a11e?auto=format&fit=crop&q=80&w=500&h=750",
+    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-woman-doing-sit-ups-on-the-floor-31675-large.mp4",
+    createdAt: "2025-05-04",
+    duration: "22:18",
+    views: 3650,
+    creatorId: 4,
+    isExclusive: true
   },
   {
     id: 5,
-    title: "Felino Selvagem",
-    description: "A vida secreta dos felinos na natureza.",
-    imageUrl: "https://images.unsplash.com/photo-1582562124811-c09040d0a901?auto=format&fit=crop&q=80&w=500&h=750",
-    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-hands-petting-a-cat-5-large.mp4",
-    year: 2022,
-    duration: "1h 32min",
-    genre: ["Documentary", "Nature"],
-    rating: 7.9
+    title: "Dancing in the Rain",
+    description: "Special choreography shot during a summer rain. One of my most artistic performances yet!",
+    thumbnailUrl: "https://images.unsplash.com/photo-1529335764835-380e027a78ff?auto=format&fit=crop&q=80&w=500&h=750",
+    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-elegant-female-dancer-performing-a-dance-4899-large.mp4",
+    createdAt: "2025-05-03",
+    duration: "15:45",
+    views: 7820,
+    creatorId: 3,
+    isExclusive: true
   },
   {
     id: 6,
-    title: "Oceano Profundo",
-    description: "Mergulho nas profundezas inexploradas do oceano.",
-    imageUrl: "https://images.unsplash.com/photo-1607153333879-c174d265f1d2?auto=format&fit=crop&q=80&w=500&h=750",
-    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-white-sand-beach-and-palm-trees-1564-large.mp4",
-    year: 2023,
-    duration: "2h 10min",
-    genre: ["Documentary", "Adventure"],
-    rating: 8.3
+    title: "Morning Routine Revealed",
+    description: "My complete morning routine from wake-up to breakfast. Learn all my beauty secrets!",
+    thumbnailUrl: "https://images.unsplash.com/photo-1612596551578-9c81c9de1b2d?auto=format&fit=crop&q=80&w=500&h=750",
+    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-woman-sitting-on-the-bed-and-drinking-a-coffee-23766-large.mp4",
+    createdAt: "2025-05-02",
+    duration: "28:10",
+    views: 5430,
+    creatorId: 1,
+    isExclusive: false
   },
   {
     id: 7,
-    title: "Cidade Neon",
-    description: "Uma aventura futurista em uma cidade dominada por luzes e tecnologia.",
-    imageUrl: "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&q=80&w=500&h=750",
-    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-city-traffic-on-a-street-at-night-4757-large.mp4",
-    year: 2020,
-    duration: "2h 22min",
-    genre: ["Sci-Fi", "Action"],
-    rating: 7.5
+    title: "Photoshoot Lighting Tips",
+    description: "Professional photography lighting tips I use for all my premium content. Improve your content quality!",
+    thumbnailUrl: "https://images.unsplash.com/photo-1633934542143-5f66211248f5?auto=format&fit=crop&q=80&w=500&h=750",
+    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-photographer-taking-pictures-in-a-city-39758-large.mp4",
+    createdAt: "2025-05-01",
+    duration: "19:22",
+    views: 4120,
+    creatorId: 2,
+    isExclusive: true
   },
   {
     id: 8,
-    title: "Montanhas Misteriosas",
-    description: "Uma jornada épica pelas maiores montanhas do mundo.",
-    imageUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=500&h=750",
-    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-landscape-of-mountains-and-sunset-3128-large.mp4",
-    year: 2021,
-    duration: "1h 48min",
-    genre: ["Adventure", "Documentary"],
-    rating: 8.0
+    title: "Evening Stretching Session",
+    description: "Wind down with me in this relaxing full-body stretching routine perfect for before bed.",
+    thumbnailUrl: "https://images.unsplash.com/photo-1566241823584-c2638af61789?auto=format&fit=crop&q=80&w=500&h=750",
+    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-woman-stretching-before-sport-4440-large.mp4",
+    createdAt: "2025-04-30",
+    duration: "16:55",
+    views: 2980,
+    creatorId: 4,
+    isExclusive: true
   }
 ];
 
 export const categories: Category[] = [
   {
     id: 1,
-    name: "Populares na Netflix",
-    movies: [movies[0], movies[1], movies[2], movies[3], movies[4]]
+    name: "Trending Content",
+    videos: [videos[0], videos[4], videos[2], videos[5], videos[7]]
   },
   {
     id: 2,
-    name: "Lançamentos",
-    movies: [movies[5], movies[6], movies[7], movies[1], movies[3]]
+    name: "Recently Added",
+    videos: [videos[0], videos[1], videos[2], videos[3]]
   },
   {
     id: 3,
-    name: "Documentários",
-    movies: [movies[2], movies[1], movies[4], movies[5], movies[7]]
+    name: "Fitness & Workouts",
+    videos: [videos[0], videos[3], videos[7]]
   },
   {
     id: 4,
-    name: "Ficção Científica",
-    movies: [movies[0], movies[6], movies[2], movies[3], movies[4]]
+    name: "Behind the Scenes",
+    videos: [videos[1], videos[6], videos[5]]
   }
 ];
 
-export const getMovieById = (id: number): Movie | undefined => {
-  return movies.find(movie => movie.id === id);
+export const getVideoById = (id: number): Video | undefined => {
+  return videos.find(video => video.id === id);
+};
+
+export const getCreatorById = (id: number): Creator | undefined => {
+  return creators.find(creator => creator.id === id);
 };
