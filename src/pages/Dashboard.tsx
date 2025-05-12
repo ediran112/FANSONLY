@@ -3,12 +3,11 @@ import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import Header from '@/components/Layout/Header';
 import VideoCarousel from '@/components/Videos/VideoCarousel';
-import { categories, videos, creators } from '@/lib/mockData';
+import { categories, videos } from '@/lib/mockData';
 import { isAuthenticated, getUser } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import { Play, Heart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Dashboard = () => {
   const [isAuth, setIsAuth] = useState<boolean | null>(null);
@@ -25,6 +24,11 @@ const Dashboard = () => {
     return <Navigate to="/" />;
   }
 
+  const trendingCategory = categories.find(c => c.name === "Trending Content");
+  const recentCategory = categories.find(c => c.name === "Recently Added");
+  const exclusiveCategory = categories.find(c => c.name === "Exclusive Content");
+  const favoritesCategory = categories.find(c => c.name === "Favorites");
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -40,18 +44,6 @@ const Dashboard = () => {
         
         <div className="relative h-full flex items-end">
           <div className="container mx-auto px-4 md:px-6 pb-20 pt-32">
-            {/* Creator info */}
-            <div className="flex items-center mb-4">
-              <Avatar className="h-10 w-10 mr-3 border-2 border-primary">
-                <AvatarImage src={creators[featuredVideo.creatorId-1].avatarUrl} alt={creators[featuredVideo.creatorId-1].name} />
-                <AvatarFallback>{creators[featuredVideo.creatorId-1].name.substring(0, 2)}</AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="text-sm text-gray-300">Criador em destaque</p>
-                <p className="font-semibold">{creators[featuredVideo.creatorId-1].name}</p>
-              </div>
-            </div>
-
             <h1 className="text-4xl md:text-6xl font-bold mb-2">{featuredVideo.title}</h1>
             <div className="flex items-center text-sm md:text-base mb-4">
               <span className="text-primary mr-2">{featuredVideo.views.toLocaleString()} visualizações</span>
@@ -80,9 +72,10 @@ const Dashboard = () => {
 
       {/* Video sections */}
       <div className="relative z-10 -mt-16 pb-10">
-        {categories.map(category => (
-          <VideoCarousel key={category.id} category={category} />
-        ))}
+        {trendingCategory && <VideoCarousel key={trendingCategory.id} category={trendingCategory} />}
+        {recentCategory && <VideoCarousel key={recentCategory.id} category={recentCategory} />}
+        {exclusiveCategory && <VideoCarousel key={exclusiveCategory.id} category={exclusiveCategory} />}
+        {favoritesCategory && <VideoCarousel key={favoritesCategory.id} category={favoritesCategory} />}
       </div>
     </div>
   );

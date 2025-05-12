@@ -68,7 +68,7 @@ export const creators: Creator[] = [
   }
 ];
 
-// Sample videos using placeholder URLs for thumbnails
+// Extended video collection to have 10+ videos per category
 export const videos: Video[] = [
   {
     id: 1,
@@ -165,6 +165,150 @@ export const videos: Video[] = [
     views: 2980,
     creatorId: 4,
     isExclusive: true
+  },
+  {
+    id: 9,
+    title: "Bedroom Confessions",
+    description: "Getting personal about life experiences and answering your most burning questions.",
+    thumbnailUrl: "https://images.unsplash.com/photo-1586105251261-72a756497a11?auto=format&fit=crop&q=80&w=500&h=750",
+    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-woman-turning-off-her-alarm-clock-42897-large.mp4",
+    createdAt: "2025-04-29",
+    duration: "40:21",
+    views: 12540,
+    creatorId: 1,
+    isExclusive: true
+  },
+  {
+    id: 10,
+    title: "Swimsuit Collection Review",
+    description: "Trying on my favorite swimsuits and sharing which ones are best for different body types.",
+    thumbnailUrl: "https://images.unsplash.com/photo-1570976447640-ac859083c325?auto=format&fit=crop&q=80&w=500&h=750",
+    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-woman-in-a-pool-1229-large.mp4",
+    createdAt: "2025-04-28",
+    duration: "24:15",
+    views: 8760,
+    creatorId: 3,
+    isExclusive: false
+  },
+  {
+    id: 11,
+    title: "Hotel Room Tour: Luxury Edition",
+    description: "Exclusive tour of my premium hotel suite during my latest vacation.",
+    thumbnailUrl: "https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&q=80&w=500&h=750",
+    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-woman-turning-on-the-tv-in-a-hotel-room-4838-large.mp4",
+    createdAt: "2025-04-27",
+    duration: "15:40",
+    views: 6230,
+    creatorId: 2,
+    isExclusive: true
+  },
+  {
+    id: 12,
+    title: "Late Night Thoughts",
+    description: "An intimate conversation about dreams, aspirations, and revealing personal secrets.",
+    thumbnailUrl: "https://images.unsplash.com/photo-1515169067868-5387ec356754?auto=format&fit=crop&q=80&w=500&h=750",
+    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-sitting-on-the-floor-and-contemplating-4832-large.mp4",
+    createdAt: "2025-04-26",
+    duration: "32:18",
+    views: 9870,
+    creatorId: 1,
+    isExclusive: true
+  },
+  {
+    id: 13,
+    title: "Spa Day Routine",
+    description: "My complete self-care routine that I do every week to maintain my glow.",
+    thumbnailUrl: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=500&h=750",
+    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-getting-facial-mask-in-spa-salon-4840-large.mp4",
+    createdAt: "2025-04-25",
+    duration: "26:45",
+    views: 5640,
+    creatorId: 3,
+    isExclusive: false
+  },
+  {
+    id: 14,
+    title: "Dinner Date Preparation",
+    description: "Watch me get ready for a romantic evening out - makeup, outfit selection and more!",
+    thumbnailUrl: "https://images.unsplash.com/photo-1596815064285-45ed8a9c0463?auto=format&fit=crop&q=80&w=500&h=750",
+    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-woman-trying-on-a-pink-dress-in-her-apartment-12281-large.mp4",
+    createdAt: "2025-04-24",
+    duration: "38:22",
+    views: 7890,
+    creatorId: 1,
+    isExclusive: true
+  },
+  {
+    id: 15,
+    title: "Home Workout: Lower Body Focus",
+    description: "A comprehensive lower body workout you can do with minimal equipment at home.",
+    thumbnailUrl: "https://images.unsplash.com/photo-1571019613576-2b22c76fd955?auto=format&fit=crop&q=80&w=500&h=750",
+    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-trainer-teaching-exercise-with-a-woman-in-a-gym-32959-large.mp4",
+    createdAt: "2025-04-23",
+    duration: "45:10",
+    views: 6430,
+    creatorId: 4,
+    isExclusive: true
+  },
+  {
+    id: 16,
+    title: "Lingerie Collection Showcase",
+    description: "Reviewing my favorite lingerie pieces with detailed feedback on comfort and quality.",
+    thumbnailUrl: "https://images.unsplash.com/photo-1581338834647-b0fb40704e21?auto=format&fit=crop&q=80&w=500&h=750",
+    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-sitting-on-her-living-room-couch-4822-large.mp4",
+    createdAt: "2025-04-22",
+    duration: "22:35",
+    views: 14520,
+    creatorId: 3,
+    isExclusive: true
+  },
+  {
+    id: 17,
+    title: "Fitness Journey: Month 3 Update",
+    description: "Progress update on my fitness transformation with before and after comparisons.",
+    thumbnailUrl: "https://images.unsplash.com/photo-1601422407692-ec4eeec1d9b3?auto=format&fit=crop&q=80&w=500&h=750",
+    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-trainer-explaining-exercises-routine-to-a-woman-32961-large.mp4",
+    createdAt: "2025-04-21",
+    duration: "18:40",
+    views: 5830,
+    creatorId: 4,
+    isExclusive: false
+  },
+  {
+    id: 18,
+    title: "Bedroom Dancing",
+    description: "An intimate dance session filmed in my bedroom with new choreography.",
+    thumbnailUrl: "https://images.unsplash.com/photo-1621784564114-6eea05b89863?auto=format&fit=crop&q=80&w=500&h=750",
+    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-woman-dancing-happily-on-her-bed-4867-large.mp4",
+    createdAt: "2025-04-20",
+    duration: "14:25",
+    views: 10240,
+    creatorId: 3,
+    isExclusive: true
+  },
+  {
+    id: 19,
+    title: "Answering Subscriber Questions",
+    description: "Spending time answering your most personal questions from my premium subscribers.",
+    thumbnailUrl: "https://images.unsplash.com/photo-1597414726125-8e95d31dc8ea?auto=format&fit=crop&q=80&w=500&h=750",
+    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-woman-talking-while-sitting-on-her-bed-45813-large.mp4",
+    createdAt: "2025-04-19",
+    duration: "50:12",
+    views: 8430,
+    creatorId: 1,
+    isExclusive: true
+  },
+  {
+    id: 20,
+    title: "My Morning Skincare Routine",
+    description: "Detailed walkthrough of all the products I use to maintain my skin's glow.",
+    thumbnailUrl: "https://images.unsplash.com/photo-1573461160327-833d7a9bf362?auto=format&fit=crop&q=80&w=500&h=750",
+    videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-young-woman-with-face-mask-looking-at-mirror-4835-large.mp4",
+    createdAt: "2025-04-18",
+    duration: "16:55",
+    views: 6720,
+    creatorId: 2,
+    isExclusive: false
   }
 ];
 
@@ -172,23 +316,23 @@ export const categories: Category[] = [
   {
     id: 1,
     name: "Trending Content",
-    videos: [videos[0], videos[4], videos[2], videos[5], videos[7]]
+    videos: videos.slice(0, 10)
   },
   {
     id: 2,
     name: "Recently Added",
-    videos: [videos[0], videos[1], videos[2], videos[3]]
+    videos: videos.slice(5, 15)
   },
   {
     id: 3,
-    name: "Fitness & Workouts",
-    videos: [videos[0], videos[3], videos[7]]
+    name: "Exclusive Content",
+    videos: videos.filter(v => v.isExclusive).slice(0, 10)
   },
   {
     id: 4,
-    name: "Behind the Scenes",
-    videos: [videos[1], videos[6], videos[5]]
-  }
+    name: "Favorites",
+    videos: [videos[0], videos[2], videos[5], videos[7], videos[9], videos[11], videos[13], videos[15], videos[17], videos[19]]
+  },
 ];
 
 export const getVideoById = (id: number): Video | undefined => {

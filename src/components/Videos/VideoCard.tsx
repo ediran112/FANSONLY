@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Video } from '@/lib/mockData';
 import { Lock, Play } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 interface VideoCardProps {
   video: Video;
@@ -19,21 +20,24 @@ const VideoCard = ({ video }: VideoCardProps) => {
 
   return (
     <div 
-      className="video-card w-[160px] md:w-[200px] lg:w-[240px] flex-shrink-0 mr-2 relative overflow-hidden rounded-md"
+      className="video-card w-[160px] md:w-[200px] lg:w-[240px] flex-shrink-0 relative overflow-hidden rounded-md"
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
       onClick={handleClick}
     >
-      <div className="relative">
+      <div className="relative h-[240px] md:h-[300px] overflow-hidden">
         <img 
           src={video.thumbnailUrl} 
           alt={video.title} 
-          className="w-full h-[240px] md:h-[300px] object-cover"
+          className={cn(
+            "w-full h-full object-cover transition-transform duration-300 hover:scale-105",
+            video.isExclusive && "filter grayscale hover:grayscale-0 transition-all duration-500"
+          )}
         />
         
         {video.isExclusive && (
           <div className="absolute top-2 right-2">
-            <Badge variant="secondary" className="bg-primary/90 text-white">
+            <Badge variant="secondary" className="badge-premium text-white animate-pulse">
               <Lock className="h-3 w-3 mr-1" />
               Exclusive
             </Badge>
