@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Navigate, useNavigate } from 'react-router-dom';
 import Header from '@/components/Layout/Header';
 import VideoPlayer from '@/components/VideoPlayer';
-import { getMovieById } from '@/lib/mockData';
+import { getVideoById } from '@/lib/mockData';
 import { isAuthenticated } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
@@ -17,7 +17,7 @@ const MovieDetails = () => {
     setIsAuth(isAuthenticated());
   }, []);
 
-  const movie = id ? getMovieById(parseInt(id)) : undefined;
+  const movie = id ? getVideoById(parseInt(id)) : undefined;
 
   if (isAuth === false) {
     return <Navigate to="/" />;
@@ -52,7 +52,7 @@ const MovieDetails = () => {
         <div className="container mx-auto px-4 md:px-6 mb-6">
           <VideoPlayer 
             videoUrl={movie.videoUrl} 
-            posterUrl={movie.imageUrl} 
+            posterUrl={movie.imageUrl || movie.thumbnailUrl} 
           />
         </div>
         
@@ -63,34 +63,20 @@ const MovieDetails = () => {
               <h1 className="text-3xl md:text-4xl font-bold mb-2">{movie.title}</h1>
               
               <div className="flex items-center text-sm md:text-base mb-4">
-                <span className="text-green-500 mr-2">{movie.rating.toFixed(1)}</span>
+                <span className="text-green-500 mr-2">{movie.views.toLocaleString()}</span>
                 <span className="mr-2">•</span>
-                <span className="mr-2">{movie.year}</span>
+                <span className="mr-2">{movie.createdAt}</span>
                 <span className="mr-2">•</span>
                 <span>{movie.duration}</span>
               </div>
               
               <p className="text-lg mb-6">{movie.description}</p>
-              
-              <div className="mb-6">
-                <h3 className="text-lg font-medium mb-2">Gêneros</h3>
-                <div className="flex flex-wrap gap-2">
-                  {movie.genre.map((genre, index) => (
-                    <span 
-                      key={index} 
-                      className="px-3 py-1 rounded-full bg-netflix-dark text-sm"
-                    >
-                      {genre}
-                    </span>
-                  ))}
-                </div>
-              </div>
             </div>
             
             <div className="lg:w-1/3">
               <div className="rounded-md overflow-hidden">
                 <img 
-                  src={movie.imageUrl} 
+                  src={movie.thumbnailUrl} 
                   alt={movie.title} 
                   className="w-full h-auto object-cover"
                 />
