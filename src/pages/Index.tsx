@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { Loader } from 'lucide-react';
+import Footer from '@/components/Layout/Footer';
 
 const TypingEffect = ({ text, repeat = false }: { text: string; repeat?: boolean }) => {
   const [displayText, setDisplayText] = useState('');
@@ -22,7 +22,7 @@ const TypingEffect = ({ text, repeat = false }: { text: string; repeat?: boolean
           setIsTyping(true);
           index.current = 0;
           setDisplayText('');
-        }, 3000); // Wait 3 seconds before restarting
+        }, 10000); // Wait 10 seconds before restarting
         
         return () => clearTimeout(timeout);
       }
@@ -45,12 +45,13 @@ const TypingEffect = ({ text, repeat = false }: { text: string; repeat?: boolean
   return <span>{displayText}</span>;
 };
 
-const LoadingDots = () => {
+const LoadingDots = ({ color = "primary" }: { color?: string }) => {
   return (
     <div className="flex space-x-1 items-center justify-center">
-      <div className="w-2 h-2 rounded-full bg-primary animate-pulse" style={{ animationDelay: '0ms' }}></div>
-      <div className="w-2 h-2 rounded-full bg-primary animate-pulse" style={{ animationDelay: '300ms' }}></div>
-      <div className="w-2 h-2 rounded-full bg-primary animate-pulse" style={{ animationDelay: '600ms' }}></div>
+      <div className={`w-2 h-2 rounded-full animate-bounce bg-${color}`} style={{ animationDelay: '0ms' }}></div>
+      <div className={`w-2 h-2 rounded-full animate-bounce bg-${color}`} style={{ animationDelay: '300ms' }}></div>
+      <div className={`w-2 h-2 rounded-full animate-bounce bg-${color}`} style={{ animationDelay: '600ms' }}></div>
+      <div className={`w-2 h-2 rounded-full animate-bounce bg-${color}`} style={{ animationDelay: '900ms' }}></div>
     </div>
   );
 };
@@ -73,7 +74,7 @@ const Index = () => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulate loading for 7 seconds before navigation
+    // Simulate loading for 4 seconds before navigation
     setTimeout(() => {
       if (login(username, password)) {
         toast.success('Login realizado com sucesso!');
@@ -82,7 +83,7 @@ const Index = () => {
         // Error toast is shown by the auth service
         setIsLoading(false);
       }
-    }, 7000);
+    }, 4000);
   };
 
   const handleConfirmAge = () => {
@@ -95,18 +96,12 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black py-12 px-4 sm:px-6 lg:px-8 relative">
-      {/* Background Image with grayscale filter */}
-      <div
-        className="absolute inset-0 z-0 bg-cover bg-center filter grayscale"
-        style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1920&h=1080')`,
-        }}
-      />
+    <div className="min-h-screen flex flex-col items-center justify-center bg-black py-12 px-4 sm:px-6 lg:px-8 relative">
+      <div className="absolute inset-0 z-0 bg-black" />
       
-      <div className="absolute inset-0 bg-black bg-opacity-70 z-10" />
+      <div className="absolute inset-0 bg-black z-10" />
       
-      <div className="w-full max-w-md z-20">
+      <div className="w-full max-w-md z-20 flex-1 flex flex-col justify-center">
         <div className="text-center mb-8">
           <h1 className="text-primary font-bold text-5xl mb-2">
             <TypingEffect text="FANSONLY" repeat={true} />
@@ -160,11 +155,13 @@ const Index = () => {
           </CardContent>
           <CardFooter className="flex justify-center border-t border-gray-800 pt-4">
             <p className="text-gray-400 text-sm">
-              © 2025 FansOnly
+              © 2025 FANSONLY
             </p>
           </CardFooter>
         </Card>
       </div>
+
+      <Footer />
 
       {/* Age Verification Dialog */}
       <Dialog open={showAgeDialog} onOpenChange={setShowAgeDialog}>

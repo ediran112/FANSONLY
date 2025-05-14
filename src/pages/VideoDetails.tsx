@@ -2,22 +2,37 @@
 import { useState, useEffect } from 'react';
 import { useParams, Navigate, useNavigate } from 'react-router-dom';
 import Header from '@/components/Layout/Header';
+import Footer from '@/components/Layout/Footer';
 import VideoPlayer from '@/components/VideoPlayer';
 import { getVideoById } from '@/lib/mockData';
 import { isAuthenticated } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
 
 const VideoDetails = () => {
   const { id } = useParams<{ id: string }>();
   const [isAuth, setIsAuth] = useState<boolean | null>(null);
   const navigate = useNavigate();
+  const [relatedVideos, setRelatedVideos] = useState<any[]>([]);
   
   useEffect(() => {
     setIsAuth(isAuthenticated());
   }, []);
 
   const video = id ? getVideoById(parseInt(id)) : undefined;
+
+  useEffect(() => {
+    if (video) {
+      // Get 5 related videos (excluding the current video)
+      const related = [...Array(5)].map((_, index) => {
+        const randomId = Math.floor(Math.random() * 8) + 1;
+        return getVideoById(randomId === parseInt(id!) ? (randomId + 1) % 8 + 1 : randomId);
+      });
+      setRelatedVideos(related);
+    }
+  }, [id, video]);
 
   if (isAuth === false) {
     return <Navigate to="/" />;
@@ -33,10 +48,10 @@ const VideoDetails = () => {
   }
 
   return (
-    <div className="min-h-screen bg-netflix-black">
+    <div className="min-h-screen bg-netflix-black flex flex-col">
       <Header />
       
-      <div className="pt-16">
+      <div className="pt-16 flex-1">
         {/* Back button */}
         <div className="container mx-auto px-4 md:px-6 py-4">
           <Button 
@@ -63,7 +78,7 @@ const VideoDetails = () => {
               <h1 className="text-3xl md:text-4xl font-bold mb-2">{video.title}</h1>
               
               <div className="flex items-center text-sm md:text-base mb-4">
-                <span className="text-green-500 mr-2">{video.views.toLocaleString()}</span>
+                <span className="text-primary mr-2">{video.views.toLocaleString()}</span>
                 <span className="mr-2">•</span>
                 <span className="mr-2">{video.createdAt}</span>
                 <span className="mr-2">•</span>
@@ -74,17 +89,32 @@ const VideoDetails = () => {
             </div>
             
             <div className="lg:w-1/3">
-              <div className="rounded-md overflow-hidden">
-                <img 
-                  src={video.thumbnailUrl} 
-                  alt={video.title} 
-                  className="w-full h-auto object-cover"
-                />
-              </div>
+              <h3 className="text-xl font-bold mb-4">Imagens Relacionadas</h3>
+              <Carousel className="w-full">
+                <CarouselContent>
+                  {[video, ...relatedVideos].map((item, index) => (
+                    <CarouselItem key={`thumb-${index}`} className="md:basis-1/2 lg:basis-1/1">
+                      <div className="p-1">
+                        <AspectRatio ratio={16 / 9}>
+                          <img 
+                            src={item.thumbnailUrl} 
+                            alt={item.title} 
+                            className="rounded-md w-full h-full object-cover"
+                          />
+                        </AspectRatio>
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="left-1" />
+                <CarouselNext className="right-1" />
+              </Carousel>
             </div>
           </div>
         </div>
       </div>
+
+      <Footer />
     </div>
   );
 };

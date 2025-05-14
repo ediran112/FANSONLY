@@ -177,7 +177,7 @@ const VideoPlayer = ({ videoUrl, posterUrl }: VideoPlayerProps) => {
       {isYouTubeVideo ? (
         <iframe
           ref={iframeRef}
-          src={`https://www.youtube.com/embed/${youtubeVideoId}?enablejsapi=1&origin=${window.location.origin}&autoplay=0`}
+          src={`https://www.youtube.com/embed/${youtubeVideoId}?enablejsapi=1&origin=${window.location.origin}&autoplay=0&color=purple`}
           className="w-full h-full object-cover"
           allowFullScreen
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -218,9 +218,9 @@ const VideoPlayer = ({ videoUrl, posterUrl }: VideoPlayerProps) => {
             max="100"
             value={progress}
             onChange={handleProgressChange}
-            className="w-full h-1 rounded-full appearance-none bg-gray-700 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary"
+            className="w-full h-2 rounded-full appearance-none bg-gray-700 cursor-pointer"
             style={{
-              background: `linear-gradient(to right, var(--primary) 0%, var(--primary) ${progress}%, rgba(100, 100, 100, 0.5) ${progress}%, rgba(100, 100, 100, 0.5) 100%)`,
+              background: `linear-gradient(to right, hsl(var(--primary)) 0%, hsl(var(--primary)) ${progress}%, rgba(100, 100, 100, 0.5) ${progress}%, rgba(100, 100, 100, 0.5) 100%)`,
             }}
           />
         </div>
@@ -231,13 +231,13 @@ const VideoPlayer = ({ videoUrl, posterUrl }: VideoPlayerProps) => {
             <Button
               variant="ghost"
               size="icon"
-              className="text-white hover:bg-white/10 rounded-full"
+              className="text-white hover:text-primary hover:bg-white/10 rounded-full"
               onClick={togglePlay}
             >
               {isPlaying ? (
-                <Pause className="h-5 w-5" />
+                <Pause className="h-6 w-6" />
               ) : (
-                <Play className="h-5 w-5" />
+                <Play className="h-6 w-6" />
               )}
             </Button>
             
@@ -245,7 +245,7 @@ const VideoPlayer = ({ videoUrl, posterUrl }: VideoPlayerProps) => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-white hover:bg-white/10 rounded-full"
+                className="text-white hover:text-primary hover:bg-white/10 rounded-full"
                 onClick={toggleMute}
               >
                 {isMuted ? (
@@ -255,7 +255,7 @@ const VideoPlayer = ({ videoUrl, posterUrl }: VideoPlayerProps) => {
                 )}
               </Button>
               
-              <div className="w-20 hidden md:block">
+              <div className="w-24 hidden md:block">
                 <input
                   type="range"
                   min="0"
@@ -263,9 +263,9 @@ const VideoPlayer = ({ videoUrl, posterUrl }: VideoPlayerProps) => {
                   step="0.01"
                   value={isMuted ? 0 : volume}
                   onChange={handleVolumeChange}
-                  className="w-full h-1 rounded-full appearance-none bg-gray-700 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary"
+                  className="w-full h-1.5 rounded-full appearance-none bg-gray-700 cursor-pointer"
                   style={{
-                    background: `linear-gradient(to right, var(--primary) 0%, var(--primary) ${isMuted ? 0 : volume * 100}%, rgba(100, 100, 100, 0.5) ${isMuted ? 0 : volume * 100}%, rgba(100, 100, 100, 0.5) 100%)`,
+                    background: `linear-gradient(to right, hsl(var(--primary)) 0%, hsl(var(--primary)) ${isMuted ? 0 : volume * 100}%, rgba(100, 100, 100, 0.5) ${isMuted ? 0 : volume * 100}%, rgba(100, 100, 100, 0.5) 100%)`,
                   }}
                 />
               </div>
@@ -279,7 +279,7 @@ const VideoPlayer = ({ videoUrl, posterUrl }: VideoPlayerProps) => {
           <Button
             variant="ghost"
             size="icon"
-            className="text-white hover:bg-white/10 rounded-full"
+            className="text-white hover:text-primary hover:bg-white/10 rounded-full"
             onClick={toggleFullScreen}
           >
             {isFullScreen ? (
@@ -293,7 +293,7 @@ const VideoPlayer = ({ videoUrl, posterUrl }: VideoPlayerProps) => {
       
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-          <Loader className="h-10 w-10 animate-spin text-primary" />
+          <div className="h-12 w-12 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
         </div>
       )}
     </div>
