@@ -100,6 +100,7 @@ const VideoDetails = () => {
                             src={item.thumbnailUrl} 
                             alt={item.title} 
                             className="rounded-md w-full h-full object-cover"
+                            style={{ height: '240px' }} // Match the height from MovieCard
                           />
                         </AspectRatio>
                       </div>

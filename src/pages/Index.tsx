@@ -8,6 +8,8 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import Footer from '@/components/Layout/Footer';
+import AvatarReview from '@/components/Reviews/AvatarReview';
+import { Loader } from 'lucide-react';
 
 const TypingEffect = ({ text, repeat = false }: { text: string; repeat?: boolean }) => {
   const [displayText, setDisplayText] = useState('');
@@ -45,22 +47,12 @@ const TypingEffect = ({ text, repeat = false }: { text: string; repeat?: boolean
   return <span>{displayText}</span>;
 };
 
-const LoadingDots = ({ color = "primary" }: { color?: string }) => {
-  return (
-    <div className="flex space-x-1 items-center justify-center">
-      <div className={`w-2 h-2 rounded-full animate-bounce bg-${color}`} style={{ animationDelay: '0ms' }}></div>
-      <div className={`w-2 h-2 rounded-full animate-bounce bg-${color}`} style={{ animationDelay: '300ms' }}></div>
-      <div className={`w-2 h-2 rounded-full animate-bounce bg-${color}`} style={{ animationDelay: '600ms' }}></div>
-      <div className={`w-2 h-2 rounded-full animate-bounce bg-${color}`} style={{ animationDelay: '900ms' }}></div>
-    </div>
-  );
-};
-
 const Index = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showAgeDialog, setShowAgeDialog] = useState(false);
+  const [showLoginForm, setShowLoginForm] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -74,7 +66,10 @@ const Index = () => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulate loading for 4 seconds before navigation
+    // Hide the login form and show only the loading animation
+    setShowLoginForm(false);
+    
+    // Simulate loading for 5 seconds before navigation
     setTimeout(() => {
       if (login(username, password)) {
         toast.success('Login realizado com sucesso!');
@@ -82,8 +77,9 @@ const Index = () => {
       } else {
         // Error toast is shown by the auth service
         setIsLoading(false);
+        setShowLoginForm(true);
       }
-    }, 4000);
+    }, 5000);
   };
 
   const handleConfirmAge = () => {
@@ -101,65 +97,65 @@ const Index = () => {
       
       <div className="absolute inset-0 bg-black z-10" />
       
-      <div className="w-full max-w-md z-20 flex-1 flex flex-col justify-center">
-        <div className="text-center mb-8">
-          <h1 className="text-primary font-bold text-5xl mb-2">
-            <TypingEffect text="FANSONLY" repeat={true} />
-          </h1>
-          <p className="text-white text-xl">Conteúdo exclusivo para assinantes</p>
+      {showLoginForm ? (
+        <div className="w-full max-w-md z-20 flex-1 flex flex-col justify-center">
+          <div className="text-center mb-8">
+            <h1 className="text-primary font-bold text-5xl mb-2">
+              <TypingEffect text="FANSONLY" repeat={true} />
+            </h1>
+            <p className="text-white text-xl">Conteúdo exclusivo para assinantes</p>
+          </div>
+          
+          <Card className="bg-black/80 border-gray-800 glass-card">
+            <CardHeader>
+              <h2 className="text-xl font-bold text-center text-white">Entrar</h2>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <Input
+                    type="text"
+                    placeholder="Usuário"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="bg-gray-800 border-gray-700 text-white"
+                    required
+                    disabled={isLoading}
+                  />
+                </div>
+                <div>
+                  <Input
+                    type="password"
+                    placeholder="Senha"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="bg-gray-800 border-gray-700 text-white"
+                    required
+                    disabled={isLoading}
+                  />
+                </div>
+                <Button 
+                  type="submit" 
+                  className="w-full bg-primary hover:bg-primary/80 text-white" 
+                  disabled={isLoading}
+                >
+                  Entrar
+                </Button>
+              </form>
+            </CardContent>
+            <CardFooter className="flex justify-center border-t border-gray-800 pt-4">
+              <AvatarReview />
+            </CardFooter>
+          </Card>
         </div>
-        
-        <Card className="bg-black/80 border-gray-800 glass-card">
-          <CardHeader>
-            <h2 className="text-xl font-bold text-center text-white">Entrar</h2>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <Input
-                  type="text"
-                  placeholder="Usuário"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="bg-gray-800 border-gray-700 text-white"
-                  required
-                  disabled={isLoading}
-                />
-              </div>
-              <div>
-                <Input
-                  type="password"
-                  placeholder="Senha"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="bg-gray-800 border-gray-700 text-white"
-                  required
-                  disabled={isLoading}
-                />
-              </div>
-              <Button 
-                type="submit" 
-                className="w-full bg-primary hover:bg-primary/80 text-white" 
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <div className="flex items-center justify-center">
-                    <span className="mr-2">Entrando</span>
-                    <LoadingDots />
-                  </div>
-                ) : (
-                  'Entrar'
-                )}
-              </Button>
-            </form>
-          </CardContent>
-          <CardFooter className="flex justify-center border-t border-gray-800 pt-4">
-            <p className="text-gray-400 text-sm">
-              © 2025 FANSONLY
-            </p>
-          </CardFooter>
-        </Card>
-      </div>
+      ) : (
+        <div className="z-20 flex-1 flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center justify-center">
+            <Loader className="h-16 w-16 text-primary animate-spin" />
+            <p className="text-white mt-4 text-lg">Carregando...</p>
+          </div>
+        </div>
+      )}
 
       <Footer />
 

@@ -54,7 +54,7 @@ const Dashboard = () => {
 
       {/* Hero section with Carousel */}
       <div className="relative w-full bg-background pt-16">
-        <Carousel className="w-full" autoPlay={true} interval={5000} loop>
+        <Carousel className="w-full">
           <CarouselContent>
             {featuredVideos.map((video, index) => (
               <CarouselItem key={video.id}>
