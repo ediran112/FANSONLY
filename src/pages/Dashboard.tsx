@@ -33,11 +33,14 @@ const Dashboard = () => {
     <div className="min-h-screen bg-background">
       <Header />
 
-      {/* Hero section */}
+      {/* Hero section with zoom animation */}
       <div className="relative h-[80vh] w-full bg-background">
         <div 
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${featuredVideo.thumbnailUrl})` }}
+          className="absolute inset-0 bg-cover bg-center animate-kenburns"
+          style={{ 
+            backgroundImage: `url(${featuredVideo.thumbnailUrl})`,
+            animation: 'kenburns 30s ease infinite alternate' 
+          }}
         >
           <div className="absolute inset-0 video-backdrop" />
         </div>

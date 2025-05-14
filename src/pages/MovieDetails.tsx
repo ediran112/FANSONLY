@@ -51,8 +51,8 @@ const MovieDetails = () => {
         {/* Video player */}
         <div className="container mx-auto px-4 md:px-6 mb-6">
           <VideoPlayer 
-            videoUrl={movie.videoUrl} 
-            posterUrl={movie.imageUrl || movie.thumbnailUrl} 
+            videoUrl="https://www.youtube.com/watch?v=vBZVoyBvGwk" 
+            posterUrl={movie.thumbnailUrl} 
           />
         </div>
         

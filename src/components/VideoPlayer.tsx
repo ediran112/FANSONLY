@@ -1,7 +1,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Play, Pause, VolumeX, Volume2, Maximize, Minimize } from 'lucide-react';
+import { Play, Pause, VolumeX, Volume2, Maximize, Minimize, Loader } from 'lucide-react';
 
 interface VideoPlayerProps {
   videoUrl: string;
@@ -17,11 +17,20 @@ const VideoPlayer = ({ videoUrl, posterUrl }: VideoPlayerProps) => {
   const [isMuted, setIsMuted] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [showControls, setShowControls] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isYouTubeVideo, setIsYouTubeVideo] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<HTMLDivElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   let controlsTimeout: NodeJS.Timeout;
 
   useEffect(() => {
+    // Check if it's a YouTube URL
+    if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+      setIsYouTubeVideo(true);
+      return;
+    }
+    
     const video = videoRef.current;
     if (!video) return;
 
@@ -46,9 +55,25 @@ const VideoPlayer = ({ videoUrl, posterUrl }: VideoPlayerProps) => {
       video.removeEventListener('loadedmetadata', setVideoData);
       video.removeEventListener('ended', () => setIsPlaying(false));
     };
-  }, []);
+  }, [videoUrl]);
 
   const togglePlay = () => {
+    if (isYouTubeVideo) {
+      // Send play/pause command to YouTube iframe
+      if (iframeRef.current) {
+        try {
+          const message = isPlaying 
+            ? JSON.stringify({ event: 'command', func: 'pauseVideo' }) 
+            : JSON.stringify({ event: 'command', func: 'playVideo' });
+          iframeRef.current.contentWindow?.postMessage(message, '*');
+          setIsPlaying(!isPlaying);
+        } catch (error) {
+          console.error('Failed to control YouTube player', error);
+        }
+      }
+      return;
+    }
+
     const video = videoRef.current;
     if (!video) return;
 
@@ -133,20 +158,39 @@ const VideoPlayer = ({ videoUrl, posterUrl }: VideoPlayerProps) => {
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
 
+  // Extract YouTube video ID
+  const getYouTubeVideoId = (url: string) => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
+
+  const youtubeVideoId = isYouTubeVideo ? getYouTubeVideoId(videoUrl) : null;
+
   return (
     <div 
       ref={playerRef} 
-      className="relative w-full aspect-video rounded-md overflow-hidden group"
+      className="relative w-full aspect-video rounded-md overflow-hidden group bg-black"
       onMouseMove={handleMouseMove}
       onMouseLeave={() => isPlaying && setShowControls(false)}
     >
-      <video
-        ref={videoRef}
-        src={videoUrl}
-        poster={posterUrl}
-        className="w-full h-full object-cover cursor-pointer"
-        onClick={handleVideoClick}
-      />
+      {isYouTubeVideo ? (
+        <iframe
+          ref={iframeRef}
+          src={`https://www.youtube.com/embed/${youtubeVideoId}?enablejsapi=1&origin=${window.location.origin}&autoplay=0`}
+          className="w-full h-full object-cover"
+          allowFullScreen
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        />
+      ) : (
+        <video
+          ref={videoRef}
+          src={videoUrl}
+          poster={posterUrl}
+          className="w-full h-full object-cover cursor-pointer"
+          onClick={handleVideoClick}
+        />
+      )}
       
       {/* Play button overlay when paused */}
       {!isPlaying && (
@@ -246,6 +290,12 @@ const VideoPlayer = ({ videoUrl, posterUrl }: VideoPlayerProps) => {
           </Button>
         </div>
       </div>
+      
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+          <Loader className="h-10 w-10 animate-spin text-primary" />
+        </div>
+      )}
     </div>
   );
 };

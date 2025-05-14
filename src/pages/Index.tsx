@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login, hasConfirmedAdultContent, confirmAdultContent } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
@@ -7,6 +7,53 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Loader } from 'lucide-react';
+
+const TypingEffect = ({ text, repeat = false }: { text: string; repeat?: boolean }) => {
+  const [displayText, setDisplayText] = useState('');
+  const [isTyping, setIsTyping] = useState(true);
+  const index = useRef(0);
+  
+  useEffect(() => {
+    if (!isTyping) {
+      if (repeat) {
+        // Wait for a while before restarting
+        const timeout = setTimeout(() => {
+          setIsTyping(true);
+          index.current = 0;
+          setDisplayText('');
+        }, 3000); // Wait 3 seconds before restarting
+        
+        return () => clearTimeout(timeout);
+      }
+      return;
+    }
+    
+    const typingInterval = setInterval(() => {
+      if (index.current < text.length) {
+        setDisplayText(prev => prev + text.charAt(index.current));
+        index.current += 1;
+      } else {
+        setIsTyping(false);
+        clearInterval(typingInterval);
+      }
+    }, 150); // Speed of typing
+    
+    return () => clearInterval(typingInterval);
+  }, [text, isTyping, repeat]);
+  
+  return <span>{displayText}</span>;
+};
+
+const LoadingDots = () => {
+  return (
+    <div className="flex space-x-1 items-center justify-center">
+      <div className="w-2 h-2 rounded-full bg-primary animate-pulse" style={{ animationDelay: '0ms' }}></div>
+      <div className="w-2 h-2 rounded-full bg-primary animate-pulse" style={{ animationDelay: '300ms' }}></div>
+      <div className="w-2 h-2 rounded-full bg-primary animate-pulse" style={{ animationDelay: '600ms' }}></div>
+    </div>
+  );
+};
 
 const Index = () => {
   const [username, setUsername] = useState('');
@@ -26,13 +73,16 @@ const Index = () => {
     e.preventDefault();
     setIsLoading(true);
     
-    if (login(username, password)) {
-      toast.success('Login realizado com sucesso!');
-      navigate('/dashboard');
-    } else {
-      // Error toast is shown by the auth service
-      setIsLoading(false);
-    }
+    // Simulate loading for 7 seconds before navigation
+    setTimeout(() => {
+      if (login(username, password)) {
+        toast.success('Login realizado com sucesso!');
+        navigate('/dashboard');
+      } else {
+        // Error toast is shown by the auth service
+        setIsLoading(false);
+      }
+    }, 7000);
   };
 
   const handleConfirmAge = () => {
@@ -46,10 +96,11 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-black py-12 px-4 sm:px-6 lg:px-8 relative">
+      {/* Background Image with grayscale filter */}
       <div
-        className="absolute inset-0 z-0 bg-cover bg-center opacity-30"
+        className="absolute inset-0 z-0 bg-cover bg-center filter grayscale"
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1595064085577-7c2cabf8b256?auto=format&fit=crop&q=80&w=1920&h=1080')`,
+          backgroundImage: `url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1920&h=1080')`,
         }}
       />
       
@@ -57,7 +108,9 @@ const Index = () => {
       
       <div className="w-full max-w-md z-20">
         <div className="text-center mb-8">
-          <h1 className="text-primary font-bold text-5xl mb-2">FANSONLY</h1>
+          <h1 className="text-primary font-bold text-5xl mb-2">
+            <TypingEffect text="FANSONLY" repeat={true} />
+          </h1>
           <p className="text-white text-xl">Conteúdo exclusivo para assinantes</p>
         </div>
         
@@ -75,6 +128,7 @@ const Index = () => {
                   onChange={(e) => setUsername(e.target.value)}
                   className="bg-gray-800 border-gray-700 text-white"
                   required
+                  disabled={isLoading}
                 />
               </div>
               <div>
@@ -85,6 +139,7 @@ const Index = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   className="bg-gray-800 border-gray-700 text-white"
                   required
+                  disabled={isLoading}
                 />
               </div>
               <Button 
@@ -92,14 +147,16 @@ const Index = () => {
                 className="w-full bg-primary hover:bg-primary/80 text-white" 
                 disabled={isLoading}
               >
-                {isLoading ? 'Entrando...' : 'Entrar'}
+                {isLoading ? (
+                  <div className="flex items-center justify-center">
+                    <span className="mr-2">Entrando</span>
+                    <LoadingDots />
+                  </div>
+                ) : (
+                  'Entrar'
+                )}
               </Button>
             </form>
-            
-            <div className="mt-4 text-center text-sm text-gray-400">
-              <p>Para demonstração use:</p>
-              <p>Usuário: <strong>edi</strong> / Senha: <strong>12345</strong></p>
-            </div>
           </CardContent>
           <CardFooter className="flex justify-center border-t border-gray-800 pt-4">
             <p className="text-gray-400 text-sm">

@@ -107,13 +107,22 @@ export default {
 					'100%': {
 						transform: 'scale(1.05)'
 					}
+				},
+				'kenburns': {
+					'0%': {
+						transform: 'scale(1)'
+					},
+					'100%': {
+						transform: 'scale(1.2)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 0.3s ease-in-out',
-				'scale-up': 'scale-up 0.3s ease-in-out'
+				'scale-up': 'scale-up 0.3s ease-in-out',
+				'kenburns': 'kenburns 30s ease-in-out infinite alternate'
 			}
 		}
 	},
