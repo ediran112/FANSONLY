@@ -93,7 +93,18 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-black py-12 px-4 sm:px-6 lg:px-8 relative">
-      <div className="absolute inset-0 z-0 bg-black" />
+      {/* Background video */}
+      <div className="fixed inset-0 z-0 overflow-hidden">
+        <video
+          src="https://imjyu.s3.us-east-2.amazonaws.com/6.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute h-full w-full object-cover filter grayscale"
+        />
+        <div className="absolute inset-0 bg-black/60 z-0" />
+      </div>
       
       <div className="absolute inset-0 bg-black z-10" />
       

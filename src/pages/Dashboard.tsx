@@ -81,15 +81,29 @@ const Dashboard = () => {
             {featuredVideos.map((video, index) => (
               <CarouselItem key={video.id}>
                 <div className="relative h-[80vh] w-full">
-                  <div 
-                    className="absolute inset-0 bg-cover bg-center animate-kenburns"
-                    style={{ 
-                      backgroundImage: `url(${video.thumbnailUrl})`,
-                      animation: 'kenburns 30s ease infinite alternate' 
-                    }}
-                  >
-                    <div className="absolute inset-0 video-backdrop" />
-                  </div>
+                  {index < 2 ? (
+                    <div className="absolute inset-0 w-full h-full">
+                      <video 
+                        src={index === 0 ? "https://imjyu.s3.us-east-2.amazonaws.com/4.mp4" : "https://imjyu.s3.us-east-2.amazonaws.com/8.mp4"}
+                        className="absolute inset-0 w-full h-full object-cover filter grayscale"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                      />
+                      <div className="absolute inset-0 video-backdrop" />
+                    </div>
+                  ) : (
+                    <div 
+                      className="absolute inset-0 bg-cover bg-center animate-kenburns"
+                      style={{ 
+                        backgroundImage: `url(${video.thumbnailUrl})`,
+                        animation: 'kenburns 30s ease infinite alternate' 
+                      }}
+                    >
+                      <div className="absolute inset-0 video-backdrop" />
+                    </div>
+                  )}
                   
                   <div className="relative h-full flex items-end">
                     <div className="container mx-auto px-4 md:px-6 pb-20 pt-32">
@@ -137,7 +151,7 @@ const Dashboard = () => {
 
       {/* Vertical videos carousel */}
       <div className="relative z-10 -mt-16 pb-6 flex-1">
-        <div className="py-4">
+        <div className="py-4 container mx-auto">
           <h2 className="text-lg md:text-xl font-medium mb-2 px-4 md:px-6">Vídeos Verticais</h2>
           <Carousel className="w-full">
             <CarouselContent>
@@ -166,11 +180,13 @@ const Dashboard = () => {
           </Carousel>
         </div>
 
-        {/* Video sections */}
-        {trendingCategory && <VideoCarousel key={trendingCategory.id} category={trendingCategory} />}
-        {recentCategory && <VideoCarousel key={recentCategory.id} category={recentCategory} />}
-        {exclusiveCategory && <VideoCarousel key={exclusiveCategory.id} category={exclusiveCategory} />}
-        {favoritesCategory && <VideoCarousel key={favoritesCategory.id} category={favoritesCategory} />}
+        {/* Video sections - with container to match spacing */}
+        <div className="container mx-auto">
+          {trendingCategory && <VideoCarousel key={trendingCategory.id} category={trendingCategory} />}
+          {recentCategory && <VideoCarousel key={recentCategory.id} category={recentCategory} />}
+          {exclusiveCategory && <VideoCarousel key={exclusiveCategory.id} category={exclusiveCategory} />}
+          {favoritesCategory && <VideoCarousel key={favoritesCategory.id} category={favoritesCategory} />}
+        </div>
       </div>
       
       <Footer />
