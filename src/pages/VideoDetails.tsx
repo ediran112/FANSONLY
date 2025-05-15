@@ -11,11 +11,26 @@ import { ArrowLeft } from 'lucide-react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 
+// Array of video URLs for the carousel
+const carouselVideos = [
+  "https://imjyu.s3.us-east-2.amazonaws.com/10.mp4",
+  "https://imjyu.s3.us-east-2.amazonaws.com/3.mp4",
+  "https://imjyu.s3.us-east-2.amazonaws.com/4.mp4",
+  "https://imjyu.s3.us-east-2.amazonaws.com/5.mp4",
+  "https://imjyu.s3.us-east-2.amazonaws.com/6.mp4",
+  "https://imjyu.s3.us-east-2.amazonaws.com/7.mp4",
+  "https://imjyu.s3.us-east-2.amazonaws.com/8.mp4",
+  "https://imjyu.s3.us-east-2.amazonaws.com/9.mp4",
+  "https://imjyu.s3.us-east-2.amazonaws.com/Untitled+video+-+Made+with+Clipchamp+(3).mp4",
+  "https://imjyu.s3.us-east-2.amazonaws.com/Untitled+video+-+Made+with+Clipchamp.mp4"
+];
+
 const VideoDetails = () => {
   const { id } = useParams<{ id: string }>();
   const [isAuth, setIsAuth] = useState<boolean | null>(null);
   const navigate = useNavigate();
   const [relatedVideos, setRelatedVideos] = useState<any[]>([]);
+  const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   
   useEffect(() => {
     setIsAuth(isAuthenticated());
@@ -33,6 +48,11 @@ const VideoDetails = () => {
       setRelatedVideos(related);
     }
   }, [id, video]);
+
+  // Handle carousel item click to play the selected video
+  const handleCarouselItemClick = (videoUrl: string) => {
+    setSelectedVideo(videoUrl);
+  };
 
   if (isAuth === false) {
     return <Navigate to="/" />;
@@ -66,7 +86,7 @@ const VideoDetails = () => {
         {/* Video player */}
         <div className="container mx-auto px-4 md:px-6 mb-6">
           <VideoPlayer 
-            videoUrl="https://site456.s3.us-east-2.amazonaws.com/biklojmg.mp4" 
+            videoUrl={selectedVideo || "https://site456.s3.us-east-2.amazonaws.com/biklojmg.mp4"} 
             posterUrl={video.thumbnailUrl} 
           />
         </div>
@@ -86,6 +106,43 @@ const VideoDetails = () => {
               </div>
               
               <p className="text-lg mb-6">{video.description}</p>
+              
+              {/* Video carousel section */}
+              <div className="mb-6">
+                <h3 className="text-xl font-bold mb-4">Videos Relacionados</h3>
+                <Carousel className="w-full">
+                  <CarouselContent>
+                    {carouselVideos.map((videoUrl, index) => (
+                      <CarouselItem key={`video-${index}`} className="md:basis-1/3 lg:basis-1/4">
+                        <div 
+                          className="p-1 cursor-pointer" 
+                          onClick={() => handleCarouselItemClick(videoUrl)}
+                        >
+                          <AspectRatio ratio={9 / 16}>
+                            <div className="relative w-full h-full overflow-hidden rounded-md">
+                              <video 
+                                src={videoUrl}
+                                className="w-full h-full object-cover filter grayscale hover:grayscale-0 transition-all duration-500"
+                                style={{ height: '240px' }}
+                                muted
+                                loop
+                                onMouseOver={(e) => {
+                                  e.currentTarget.play();
+                                }}
+                                onMouseOut={(e) => {
+                                  e.currentTarget.pause();
+                                }}
+                              />
+                            </div>
+                          </AspectRatio>
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious className="left-1" />
+                  <CarouselNext className="right-1" />
+                </Carousel>
+              </div>
             </div>
             
             <div className="lg:w-1/3">
@@ -113,9 +170,13 @@ const VideoDetails = () => {
                                 onTimeUpdate={(e) => {
                                   // Wait 7 seconds before showing video
                                   setTimeout(() => {
-                                    e.currentTarget.style.opacity = "1";
-                                    e.currentTarget.previousElementSibling!.style.opacity = "0";
-                                    e.currentTarget.play();
+                                    const videoElement = e.currentTarget;
+                                    const imgElement = videoElement.previousElementSibling as HTMLElement;
+                                    if (imgElement && videoElement) {
+                                      videoElement.style.opacity = "1";
+                                      imgElement.style.opacity = "0";
+                                      videoElement.play();
+                                    }
                                   }, 7000);
                                 }}
                               />
