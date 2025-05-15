@@ -82,10 +82,10 @@ const VideoCarousel = ({ category }: VideoCarouselProps) => {
           <ChevronLeft className="h-6 w-6" />
         </Button>
         
-        {/* Carousel */}
+        {/* Carousel - Adjusted gap to match image carousel */}
         <div 
           ref={carouselRef} 
-          className="carousel flex px-4 md:px-6 gap-2 py-2 scroll-smooth"
+          className="carousel flex px-4 md:px-6 gap-1 py-2 scroll-smooth"
           onScroll={updateScrollButtons}
         >
           {category.videos.map(video => (
