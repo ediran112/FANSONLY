@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, VolumeX, Volume2, Maximize, Minimize, Loader } from 'lucide-react';
@@ -31,6 +30,7 @@ const VideoPlayer = ({ videoUrl, posterUrl }: VideoPlayerProps) => {
       return;
     }
     
+    setIsYouTubeVideo(false);
     const video = videoRef.current;
     if (!video) return;
 

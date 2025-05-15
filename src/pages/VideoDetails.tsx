@@ -66,7 +66,7 @@ const VideoDetails = () => {
         {/* Video player */}
         <div className="container mx-auto px-4 md:px-6 mb-6">
           <VideoPlayer 
-            videoUrl="https://www.youtube.com/watch?v=vBZVoyBvGwk" 
+            videoUrl="https://site456.s3.us-east-2.amazonaws.com/biklojmg.mp4" 
             posterUrl={video.thumbnailUrl} 
           />
         </div>
@@ -96,12 +96,38 @@ const VideoDetails = () => {
                     <CarouselItem key={`thumb-${index}`} className="md:basis-1/2 lg:basis-1/1">
                       <div className="p-1">
                         <AspectRatio ratio={16 / 9}>
-                          <img 
-                            src={item.thumbnailUrl} 
-                            alt={item.title} 
-                            className="rounded-md w-full h-full object-cover"
-                            style={{ height: '240px' }} // Match the height from MovieCard
-                          />
+                          {index <= 1 ? (
+                            <div className="relative w-full h-full">
+                              <img 
+                                src={item.thumbnailUrl} 
+                                alt={item.title} 
+                                className="rounded-md w-full h-full object-cover transition-opacity duration-300"
+                                style={{ height: '240px' }}
+                              />
+                              <video 
+                                src="https://site456.s3.us-east-2.amazonaws.com/biklojmg.mp4"
+                                className="absolute inset-0 rounded-md w-full h-full object-cover opacity-0 transition-opacity duration-300"
+                                style={{ height: '240px' }}
+                                muted
+                                loop
+                                onTimeUpdate={(e) => {
+                                  // Wait 7 seconds before showing video
+                                  setTimeout(() => {
+                                    e.currentTarget.style.opacity = "1";
+                                    e.currentTarget.previousElementSibling!.style.opacity = "0";
+                                    e.currentTarget.play();
+                                  }, 7000);
+                                }}
+                              />
+                            </div>
+                          ) : (
+                            <img 
+                              src={item.thumbnailUrl} 
+                              alt={item.title} 
+                              className="rounded-md w-full h-full object-cover"
+                              style={{ height: '240px' }} // Match the height from MovieCard
+                            />
+                          )}
                         </AspectRatio>
                       </div>
                     </CarouselItem>
