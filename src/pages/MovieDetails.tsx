@@ -34,6 +34,14 @@ const MovieDetails = () => {
   
   useEffect(() => {
     setIsAuth(isAuthenticated());
+    
+    // Check if there's a selected video in sessionStorage
+    const storedVideo = sessionStorage.getItem('selectedVideo');
+    if (storedVideo) {
+      setSelectedVideo(storedVideo);
+      // Clear the stored video to avoid issues with future navigation
+      sessionStorage.removeItem('selectedVideo');
+    }
   }, []);
 
   const movie = id ? getVideoById(parseInt(id)) : undefined;
@@ -84,11 +92,14 @@ const MovieDetails = () => {
         </div>
 
         {/* Video player */}
-        <div className="container mx-auto px-4 md:px-6 mb-6">
-          <VideoPlayer 
-            videoUrl={selectedVideo || "https://site456.s3.us-east-2.amazonaws.com/biklojmg.mp4"} 
-            posterUrl={movie.thumbnailUrl} 
-          />
+        <div className="container mx-auto px-4 md:px-6 mb-6 flex justify-center">
+          <div className={`${selectedVideo ? 'max-w-[500px]' : 'w-full'}`}>
+            <VideoPlayer 
+              videoUrl={selectedVideo || "https://site456.s3.us-east-2.amazonaws.com/biklojmg.mp4"} 
+              posterUrl={movie.thumbnailUrl}
+              isVertical={Boolean(selectedVideo && carouselVideos.includes(selectedVideo))}
+            />
+          </div>
         </div>
         
         {/* Movie details */}
@@ -126,12 +137,8 @@ const MovieDetails = () => {
                                 style={{ height: '240px' }}
                                 muted
                                 loop
-                                onMouseOver={(e) => {
-                                  e.currentTarget.play();
-                                }}
-                                onMouseOut={(e) => {
-                                  e.currentTarget.pause();
-                                }}
+                                autoPlay
+                                playsInline
                               />
                             </div>
                           </AspectRatio>
@@ -153,12 +160,42 @@ const MovieDetails = () => {
                     <CarouselItem key={`thumb-${index}`} className="md:basis-1/2 lg:basis-1/1">
                       <div className="p-1">
                         <AspectRatio ratio={16 / 9}>
-                          <img 
-                            src={item.thumbnailUrl} 
-                            alt={item.title} 
-                            className="rounded-md w-full h-full object-cover"
-                            style={{ height: '240px' }} // Match the height from MovieCard
-                          />
+                          {index <= 1 ? (
+                            <div className="relative w-full h-full">
+                              <img 
+                                src={item.thumbnailUrl} 
+                                alt={item.title} 
+                                className="rounded-md w-full h-full object-cover transition-opacity duration-300"
+                                style={{ height: '240px' }}
+                              />
+                              <video 
+                                src="https://site456.s3.us-east-2.amazonaws.com/biklojmg.mp4"
+                                className="absolute inset-0 rounded-md w-full h-full object-cover opacity-0 transition-opacity duration-300"
+                                style={{ height: '240px' }}
+                                muted
+                                loop
+                                onTimeUpdate={(e) => {
+                                  // Wait 7 seconds before showing video
+                                  setTimeout(() => {
+                                    const videoElement = e.currentTarget;
+                                    const imgElement = videoElement.previousElementSibling as HTMLElement;
+                                    if (imgElement && videoElement) {
+                                      videoElement.style.opacity = "1";
+                                      imgElement.style.opacity = "0";
+                                      videoElement.play();
+                                    }
+                                  }, 7000);
+                                }}
+                              />
+                            </div>
+                          ) : (
+                            <img 
+                              src={item.thumbnailUrl} 
+                              alt={item.title} 
+                              className="rounded-md w-full h-full object-cover"
+                              style={{ height: '240px' }}
+                            />
+                          )}
                         </AspectRatio>
                       </div>
                     </CarouselItem>

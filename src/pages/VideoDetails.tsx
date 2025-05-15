@@ -34,6 +34,14 @@ const VideoDetails = () => {
   
   useEffect(() => {
     setIsAuth(isAuthenticated());
+    
+    // Check if there's a selected video in sessionStorage
+    const storedVideo = sessionStorage.getItem('selectedVideo');
+    if (storedVideo) {
+      setSelectedVideo(storedVideo);
+      // Clear the stored video to avoid issues with future navigation
+      sessionStorage.removeItem('selectedVideo');
+    }
   }, []);
 
   const video = id ? getVideoById(parseInt(id)) : undefined;
@@ -83,12 +91,15 @@ const VideoDetails = () => {
           </Button>
         </div>
 
-        {/* Video player */}
-        <div className="container mx-auto px-4 md:px-6 mb-6">
-          <VideoPlayer 
-            videoUrl={selectedVideo || "https://site456.s3.us-east-2.amazonaws.com/biklojmg.mp4"} 
-            posterUrl={video.thumbnailUrl} 
-          />
+        {/* Video player - with vertical aspect ratio for the selected vertical video */}
+        <div className="container mx-auto px-4 md:px-6 mb-6 flex justify-center">
+          <div className={`${selectedVideo ? 'max-w-[500px]' : 'w-full'}`}>
+            <VideoPlayer 
+              videoUrl={selectedVideo || "https://site456.s3.us-east-2.amazonaws.com/biklojmg.mp4"} 
+              posterUrl={video.thumbnailUrl}
+              isVertical={Boolean(selectedVideo && carouselVideos.includes(selectedVideo))}
+            />
+          </div>
         </div>
         
         {/* Video details */}
@@ -126,12 +137,8 @@ const VideoDetails = () => {
                                 style={{ height: '240px' }}
                                 muted
                                 loop
-                                onMouseOver={(e) => {
-                                  e.currentTarget.play();
-                                }}
-                                onMouseOut={(e) => {
-                                  e.currentTarget.pause();
-                                }}
+                                autoPlay
+                                playsInline
                               />
                             </div>
                           </AspectRatio>
@@ -186,7 +193,7 @@ const VideoDetails = () => {
                               src={item.thumbnailUrl} 
                               alt={item.title} 
                               className="rounded-md w-full h-full object-cover"
-                              style={{ height: '240px' }} // Match the height from MovieCard
+                              style={{ height: '240px' }}
                             />
                           )}
                         </AspectRatio>

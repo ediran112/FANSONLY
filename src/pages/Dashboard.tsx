@@ -17,6 +17,20 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
+// Array of vertical video URLs for the first carousel
+const verticalVideos = [
+  "https://imjyu.s3.us-east-2.amazonaws.com/10.mp4",
+  "https://imjyu.s3.us-east-2.amazonaws.com/3.mp4",
+  "https://imjyu.s3.us-east-2.amazonaws.com/4.mp4",
+  "https://imjyu.s3.us-east-2.amazonaws.com/5.mp4",
+  "https://imjyu.s3.us-east-2.amazonaws.com/6.mp4",
+  "https://imjyu.s3.us-east-2.amazonaws.com/7.mp4",
+  "https://imjyu.s3.us-east-2.amazonaws.com/8.mp4",
+  "https://imjyu.s3.us-east-2.amazonaws.com/9.mp4",
+  "https://imjyu.s3.us-east-2.amazonaws.com/Untitled+video+-+Made+with+Clipchamp+(3).mp4",
+  "https://imjyu.s3.us-east-2.amazonaws.com/Untitled+video+-+Made+with+Clipchamp.mp4"
+];
+
 const Dashboard = () => {
   const [isAuth, setIsAuth] = useState<boolean | null>(null);
   const navigate = useNavigate();
@@ -38,6 +52,14 @@ const Dashboard = () => {
     
     return () => clearInterval(interval);
   }, [featuredVideos.length]);
+
+  // Handle video card click
+  const handleVideoClick = (videoUrl: string) => {
+    // Store the selected video URL in sessionStorage
+    sessionStorage.setItem('selectedVideo', videoUrl);
+    // Navigate to video details page
+    navigate('/video/1');
+  };
 
   if (isAuth === false) {
     return <Navigate to="/" />;
@@ -113,8 +135,38 @@ const Dashboard = () => {
         </Carousel>
       </div>
 
-      {/* Video sections */}
-      <div className="relative z-10 -mt-16 pb-10 flex-1">
+      {/* Vertical videos carousel */}
+      <div className="relative z-10 -mt-16 pb-6 flex-1">
+        <div className="py-4">
+          <h2 className="text-lg md:text-xl font-medium mb-2 px-4 md:px-6">Vídeos Verticais</h2>
+          <Carousel className="w-full">
+            <CarouselContent>
+              {verticalVideos.map((videoUrl, index) => (
+                <CarouselItem key={`vertical-${index}`} className="md:basis-1/4 lg:basis-1/5">
+                  <div 
+                    className="p-1 cursor-pointer" 
+                    onClick={() => handleVideoClick(videoUrl)}
+                  >
+                    <div className="relative rounded-md overflow-hidden" style={{ aspectRatio: '9/16', height: '240px' }}>
+                      <video 
+                        src={videoUrl}
+                        className="w-full h-full object-cover filter grayscale hover:grayscale-0 transition-all duration-500"
+                        muted
+                        autoPlay
+                        loop
+                        playsInline
+                      />
+                    </div>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="left-1" />
+            <CarouselNext className="right-1" />
+          </Carousel>
+        </div>
+
+        {/* Video sections */}
         {trendingCategory && <VideoCarousel key={trendingCategory.id} category={trendingCategory} />}
         {recentCategory && <VideoCarousel key={recentCategory.id} category={recentCategory} />}
         {exclusiveCategory && <VideoCarousel key={exclusiveCategory.id} category={exclusiveCategory} />}

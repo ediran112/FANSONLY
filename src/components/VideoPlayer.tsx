@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, VolumeX, Volume2, Maximize, Minimize, Loader } from 'lucide-react';
@@ -5,9 +6,10 @@ import { Play, Pause, VolumeX, Volume2, Maximize, Minimize, Loader } from 'lucid
 interface VideoPlayerProps {
   videoUrl: string;
   posterUrl?: string;
+  isVertical?: boolean;
 }
 
-const VideoPlayer = ({ videoUrl, posterUrl }: VideoPlayerProps) => {
+const VideoPlayer = ({ videoUrl, posterUrl, isVertical = false }: VideoPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
@@ -170,7 +172,7 @@ const VideoPlayer = ({ videoUrl, posterUrl }: VideoPlayerProps) => {
   return (
     <div 
       ref={playerRef} 
-      className="relative w-full aspect-video rounded-md overflow-hidden group bg-black"
+      className={`relative w-full rounded-md overflow-hidden group bg-black ${isVertical ? 'aspect-[9/16]' : 'aspect-video'}`}
       onMouseMove={handleMouseMove}
       onMouseLeave={() => isPlaying && setShowControls(false)}
     >
@@ -187,7 +189,7 @@ const VideoPlayer = ({ videoUrl, posterUrl }: VideoPlayerProps) => {
           ref={videoRef}
           src={videoUrl}
           poster={posterUrl}
-          className="w-full h-full object-cover cursor-pointer"
+          className={`w-full h-full object-cover cursor-pointer ${isVertical ? 'object-contain bg-black' : 'object-cover'}`}
           onClick={handleVideoClick}
         />
       )}
